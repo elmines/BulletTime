@@ -28,6 +28,9 @@
             var scene = new THREE.Scene(); //container for everything, all obects added here to be displayed in browser
             var camera = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR); //camera is how we see everything
 
+	    scene.add(new THREE.HemisphereLight(0xaaaaaa,0xffffff,1.0))
+
+
 	    //console.log("camera width: " + camera.getFilmWidth())
 	    //console.log("camera hgt: " + camera.getFilmHeight())
 
@@ -70,7 +73,7 @@
             function RandomCube() {
 
                 var geometry = new THREE.SphereBufferGeometry(0.5, 16, 64);
-                var material = new THREE.MeshBasicMaterial({color: RandomColor()});
+                var material = new THREE.MeshLambertMaterial({color: RandomColor()});
                 MAX_DISPLACEMENT = 9;
 
                 var cube = new THREE.Mesh(geometry, material);
@@ -164,8 +167,8 @@
 	// This is where the left and right paddles are set up.
 	var paddle = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 	var fist = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-	var material1 = new THREE.MeshBasicMaterial({ color: 0x005500 });
-	var material2 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+	var material1 = new THREE.MeshLambertMaterial({ color: 0x005500 });
+	var material2 = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
 
 	var right_paddle = new THREE.Mesh(paddle, material1)
 	scene.add(right_paddle)
