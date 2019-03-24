@@ -43,7 +43,8 @@
             var renderer = new THREE.WebGLRenderer(); //displays scene
             renderer.setSize(WIDTH, HEIGHT);
             document.body.appendChild(renderer.domElement);
-
+	
+	    var dodged_cubes = [];
             var cubes = [];
             for (var i = 0; i < NUM_CUBES; ++i) cubes.push(RandomCube());
             cubes.forEach( function(cube) {scene.add(cube); } );
@@ -53,6 +54,8 @@
             //change bulletTime bool based on Pierce's concentration algorithm
 
             var intervalId = setInterval(function() {
+		for (var i = 0; i < dodged_cubes.length; i++) { fancy_matrix_move_bullet_goes_off_screen(dodged_cubes[i]) }
+	
                 MoveCubesForward(cubes, bulletTime);
                 if (cubes.some(pastCamera)) gameOver();
 
@@ -138,10 +141,7 @@
             }
 
 	    
-            function get_rid_of_object(the_bullet) {
-
-		//console.log("\n\n\n the type of the bullet is : " + typeof(the_bullet) + "\n\n\n")
-	
+            function fancy_matrix_move_bullet_goes_off_screen(the_bullet) {
 		var dist = bulletTime ? -0.01 : -0.03;
 		if (the_bullet.position.x < 0) { 
 			the_bullet.position.x -= 0.05
@@ -296,6 +296,23 @@
                  open_right_hand()
 	      }
 	
+
+
+
+	      // Test for collision.
+              var playerBB = new THREE.Box3().setFromObject(right_paddle);
+              for (var i = 0; i < cubes.length; i++)
+                        {
+                        var cubeBB = new THREE.Box3().setFromObject(cubes[i]);
+                        if (playerBB.intersectsBox(cubeBB))
+                                {
+                                // The player has hit a cube
+                                console.log(" The player has hit a cube")
+				dodged_cubes.push(cubes[i]);
+				cubes.splice(i, 1);
+                                }
+                        }
+
 
 
 
