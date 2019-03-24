@@ -17,7 +17,7 @@
             //double leftPositonX leftPositionY leftPositionZ rightPositionX rightPositionY rightPositionZ
             //double leftRotationX leftRotationY leftRotationZ rightRotationX rightRotationY rightRotationZ
 
-            const WIDTH = 1200, HEIGHT = 600;
+            const WIDTH = 1366, HEIGHT = 600;
 
             const FOV = 42.5, //field of view is angle of observable world (45-75 standard)
                 ASPECT = WIDTH / HEIGHT, //difference between horizontal FOV and vertical FOV
@@ -59,9 +59,6 @@
                 MoveCubesForward(cubes, bulletTime);
                 if (cubes.some(pastCamera)) gameOver();
 
-                //Filter out obsolete cubes
-                cubes.filter(pastCamera).forEach(cube => scene.remove(cube));
-                cubes = cubes.filter(cube => !pastCamera(cube));
                 Animate();
             }, 20)
 
@@ -144,14 +141,14 @@
             function fancy_matrix_move_bullet_goes_off_screen(the_bullet) {
 		var dist = bulletTime ? -0.01 : -0.03;
 		if (the_bullet.position.x < 0) { 
-			the_bullet.position.x -= 0.05
+			the_bullet.position.x -= 0.02
 		} else {
-			the_bullet.position.x += 0.05
+			the_bullet.position.x += 0.02
 		}
 		if (the_bullet.position.y < 0) { 
-			the_bullet.position.y -= 0.05
+			the_bullet.position.y -= 0.02
 		} else {
-			the_bullet.position.y += 0.05
+			the_bullet.position.y += 0.02
 		}
 		
 	    }
@@ -165,8 +162,8 @@
 
 	<script>
 	// This is where the left and right paddles are set up.
-	var paddle = new THREE.BoxGeometry(1, 0.25, 1);
-	var fist = new THREE.BoxGeometry(0.25, 0.75, 1);
+	var paddle = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+	var fist = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 	var material1 = new THREE.MeshBasicMaterial({ color: 0x005500 });
 	var material2 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
@@ -242,67 +239,22 @@
 	    return; // Skip this update
 	  }
 
-	  // Display Frame object data
-	  var frameOutput = document.getElementById("frameData");
+          if (frame.hands.length < 1) return;
 
-	  var frameString = "Frame ID: " + frame.id  + "<br />"
-                  + "Timestamp: " + frame.timestamp + " &micro;s<br />"
-                  + "Hands: " + frame.hands.length + "<br />"
-                  + "Fingers: " + frame.fingers.length + "<br />"
-                  + "Tools: " + frame.tools.length + "<br />"
-                  + "Gestures: " + frame.gestures.length + "<br />";
-
-	  // Frame motion factors
-	  if (previousFrame && previousFrame.valid) {
-	    var translation = frame.translation(previousFrame);
-	    frameString += "Translation: " + vectorToString(translation) + " mm <br />";
-
-	    var rotationAxis = frame.rotationAxis(previousFrame);
-	    var rotationAngle = frame.rotationAngle(previousFrame);
-	    frameString += "Rotation axis: " + vectorToString(rotationAxis, 2) + "<br />";
-	    frameString += "Rotation angle: " + rotationAngle.toFixed(2) + " radians<br />";
-
-	    var scaleFactor = frame.scaleFactor(previousFrame);
-	    frameString += "Scale factor: " + scaleFactor.toFixed(2) + "<br />";
-	  }
-	  frameOutput.innerHTML = "<div style='width:300px; float:left; padding:5px'>" + frameString + "</div>";
-
-	  // Display Hand object data
-	  var handOutput = document.getElementById("handData");
-	  var handString = "";
-	  if (frame.hands.length > 0) {
-	    for (var i = 0; i < frame.hands.length; i++) {
-	      var hand = frame.hands[i];
-
-	      handString += "<div style='width:300px; float:left; padding:5px'>";
-	      handString += "Hand ID: " + hand.id + "<br />";
-	      handString += "Type: " + hand.type + " hand" + "<br />";
-	      handString += "Direction: " + vectorToString(hand.direction, 2) + "<br />";
-	      handString += "Palm position: " + vectorToString(hand.palmPosition) + " mm<br />";
-	      handString += "Grab strength: " + hand.grabStrength + "<br />";
-	      handString += "Pinch strength: " + hand.pinchStrength + "<br />";
-	      handString += "Confidence: " + hand.confidence + "<br />";
-	      handString += "Arm direction: " + vectorToString(hand.arm.direction()) + "<br />";
-	      handString += "Arm center: " + vectorToString(hand.arm.center()) + "<br />";
-	      handString += "Arm up vector: " + vectorToString(hand.arm.basis[1]) + "<br />";
+              var hand = frame.hands[0];
 
 	      // Move cursor to hand position.
 	      move_right_paddle_to_position(hand.palmPosition[0], hand.palmPosition[1], hand.palmPosition[2])
 
 	      // Check to see if closed fist or not.
-	      if (hand.grabStrength > 0.4) {
-		 make_right_hand_fist()
-	      } else {
-                 open_right_hand()
-	      }
-	
-
+	      if (hand.grabStrength > 0.4) make_right_hand_fist()
+	      else                         open_right_hand()
 
 
 	      // Test for collision.
               var playerBB = new THREE.Box3().setFromObject(right_paddle);
               for (var i = 0; i < cubes.length; i++)
-                        {
+              {
                         var cubeBB = new THREE.Box3().setFromObject(cubes[i]);
                         if (playerBB.intersectsBox(cubeBB))
                                 {
@@ -311,57 +263,10 @@
 				dodged_cubes.push(cubes[i]);
 				cubes.splice(i, 1);
                                 }
-                        }
-
-
-
-
-	}
-	}
-
-
-	// Test for collision with the paddle.
-        for (var vertexIndex = 0; vertexIndex < right_paddle.geometry.vertices.length; vertexIndex++)
-      	    {       
-	    var localVertex = right_paddle.geometry.vertices[vertexIndex].clone();
-	    var directionVector = localVertex.sub( right_paddle.position ).normalize();
-	    var ray = new THREE.Raycaster( right_paddle.position, directionVector.clone().normalize() );
-	    var collisionResults = ray.intersectObjects( cubes );
-	    if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-	    	{
-	        // a collision occurred... give the object that we interested with (ie collisionResults[0]) to a function that gets rid of it.
-		// set up animation looper
-    	        var dodgedBulletIntervalId = setInterval(function() {
-
-			//scene.remove(collisionResults[0].object)
-		
-		  var the_bullet = collisionResults[0].object;
-		  var dist = bulletTime ? -0.01 : -0.03;
-		  the_bullet.position.z += dist;
-                  if (the_bullet.position.x < 0) { 
-                        the_bullet.position.x -= 0.5
-                  } else {
-                        the_bullet.position.x += 0.5
-                  }
-                  if (the_bullet.position.y < 0) { 
-                        the_bullet.position.y -= 0.5
-                  } else {
-                        the_bullet.position.y += 0.5
-                  }
-
-		
-		   //get_rid_of_object(collisionResults[0].object)	
-                   Animate();
-                }, 20)
-		//console.log("\n\n\n A COLLISION HAPPENS HERE!!!")
-	    	}
-     	    }
-
-
-
-  	     // Store frame for motion functions
+              }
+ 	     // Store frame for motion functions
 	     previousFrame = frame;
-})
+        }); //End Houston's now good loop
 
 
 function vectorToString(vector, digits) {
@@ -393,37 +298,6 @@ function pauseForGestures() {
 }
 
 </script>
-
-
-
-
-
-
-
-
-
-
-
-<h1>Leap Motion JavaScript Sample</h1>
-<div id="main">
-  <button id="pause" onclick="togglePause()">Pause</button>
-  <input type="checkbox" id="pauseOnGesture" onclick="pauseForGestures()">Pause on gesture</input>
-  <h3>Frame data:</h3>
-  <div id="frameData"></div>
-  <div style="clear:both;"></div>
-  <h3>Hand data:</h3>
-  <div id="handData"></div>
-  <div style="clear:both;"></div>
-  <h3>Finger and tool data:</h3>
-  <div id="pointableData"></div>
-  <div style="clear:both;"></div>
-  <h3>Gesture data:</h3>
-  <div id="gestureData"></div>
-</div>
-
-
-
-
 
     </body>
 </html>
