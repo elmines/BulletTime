@@ -229,6 +229,9 @@ var controllerOptions = { enableGestures: true };
 // to use HMD mode:
 // controllerOptions.optimizeHMD = true;
 
+
+var started_by_user = false
+
 Leap.loop(controllerOptions, function(frame) {
     if (paused || frame.hands.length == 0) {
         return; // Skip this update
@@ -242,6 +245,9 @@ Leap.loop(controllerOptions, function(frame) {
 
     // Check to see if closed fist or not.
     if (hand.pinchStrength > 0.4) {
+
+	started_by_user = true;
+
     click_clicker();
     } else {
     unclick_clicker();
@@ -251,7 +257,7 @@ Leap.loop(controllerOptions, function(frame) {
     var playerBB = new THREE.Box3().setFromObject(clicker);
     for (var i = 0; i < cubes.length; i++) {
     var cubeBB = new THREE.Box3().setFromObject(cubes[i]);
-    if (playerBB.intersectsBox(cubeBB) || typeof abc !== "undefined") {
+    if ((playerBB.intersectsBox(cubeBB) || typeof abc !== "undefined") && started_by_user) {
         // The player has hit a cube
         console.log("The player has hit a cube");
         console.log("GameOver");
