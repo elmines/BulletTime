@@ -27,6 +27,9 @@
             var scene = new THREE.Scene(); //container for everything, all obects added here to be displayed in browser
             var camera = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR); //camera is how we see everything
 
+	    scene.add(new THREE.HemisphereLight(0xaaaaaa,0xffffff,1.0))
+
+
 	    //console.log("camera width: " + camera.getFilmWidth())
 	    //console.log("camera hgt: " + camera.getFilmHeight())
 
@@ -72,7 +75,7 @@
 	    	// var possible_object_colors = [0xf69243, 0xf6f043, 0xaff25e, 0x5ef2a4, 0x5c5cff, 0x5ef2d1, 0x5ec4f2, 0x8684f6, 0xd184f6, 0xe84f63]
 	    	var possible_object_colors = [0xf69243, 0xf6f043, 0xffffff, 0x5ef2a4, 0x5c5cff, 0x5ef2d1, 0x5ec4f2, 0x8684f6, 0xd184f6, 0xe84f63]
                 var geometry = new THREE.BoxBufferGeometry(1, 1, 1);
-                var material = new THREE.MeshBasicMaterial({color: possible_object_colors[color_index]});
+                var material = new THREE.MeshLambertMaterial({color: possible_object_colors[color_index]});
                 MAX_DISPLACEMENT = 9;
 
                 var cube = new THREE.Mesh(geometry, material);
@@ -154,7 +157,7 @@
 	for (var i = 0; i < num_coins; i++)
 		{
 		var coin_geom = new THREE.SphereBufferGeometry(0.2, 32, 32);
-		var material = new THREE.MeshBasicMaterial({color: 0xffcc00});
+		var material = new THREE.MeshLambertMaterial({color: 0xffcc00});
 		MAX_DISPLACEMENT = 9;
 		var coin = new THREE.Mesh(coin_geom, material);
 		scene.add(coin);
@@ -172,8 +175,8 @@
 	// This is where the clicker is set up.
 	var clicking_geometry = new THREE.SphereGeometry(0.4, 32, 32);
 	var not_clicking_geometry = new THREE.SphereGeometry(0.4, 32, 32);
-	var clicking_material = new THREE.MeshBasicMaterial({ color: 0x006600 });
-	var not_clicking_material = new THREE.MeshBasicMaterial({ color: 0x00cc66 });
+	var clicking_material = new THREE.MeshLambertMaterial({ color: 0x006600 });
+	var not_clicking_material = new THREE.MeshLambertMaterial({ color: 0x00cc66 });
 
 	var clicker = new THREE.Mesh(not_clicking_geometry, not_clicking_material)
 	scene.add(clicker)
@@ -192,10 +195,10 @@
                 */ 
                 var cam_width_range = cam_width;
                 var cam_height_range = cam_height;
-                var input_x_min = -160
-                var input_x_max= 160
-                var input_y_min = 100
-                var input_y_max = 460
+                var input_x_min = -100
+                var input_x_max= 100
+                var input_y_min = 150
+                var input_y_max = 300
 
                 var calibrated_x = (x_pos - input_x_min)*(cam_width)/(input_x_max - input_x_min) - cam_width/2;
                 var calibrated_y = (y_pos - input_y_min)*(cam_height)/(input_y_max - input_y_min) - cam_height/2.5; 
