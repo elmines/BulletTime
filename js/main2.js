@@ -88,7 +88,7 @@ function RandomColor() {
   return color;
 }
 function pastCamera(cube) {
-  return cube.position.z > camera.position.z;
+  return cube.position.z > camera.position.z + 1;
 }
 function MoveCubesForward(cubes, bulletTime) {
   cubes.forEach(function(cube) {
@@ -145,10 +145,10 @@ var move_right_paddle_to_position = function(x_pos, y_pos, z_pos) {
 
   var cam_width_range = cam_width;
   var cam_height_range = cam_height;
-  var input_x_min = -160;
-  var input_x_max = 160;
-  var input_y_min = 50;
-  var input_y_max = 460;
+  var input_x_min = -100;
+  var input_x_max = 100;
+  var input_y_min = 150;
+  var input_y_max = 300;
   var input_z_min = -100;
   var input_z_max = 100;
   //var calibrated_x = (x_pos > 1) ? ((x_pos - input_x_min)*(cam_width)/(input_x_max - input_x_min) - cam_width/2)  : 1;
