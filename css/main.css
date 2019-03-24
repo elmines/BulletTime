@@ -2,4 +2,16 @@ html, body {
     padding: 0;
     margin: 0;
     overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+
+}
+
+#gameoverMessage {
+    position: absolute;
+    top: 20vh;
+    text-align: center;
+    width: 100vw;
+    font-size: 6em;
+    display:none;
+    color: white;
 }

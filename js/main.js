@@ -20,11 +20,14 @@ var renderer = new THREE.WebGLRenderer(); //displays scene
 renderer.setSize(WIDTH, HEIGHT);
 document.body.appendChild(renderer.domElement);
 
+let gameover = false;
+
 function EventLoop() {
     MoveCubes(cubes, bulletTime);
     renderer.render(scene, camera);
 
-    setTimeout(EventLoop, 20);
+    if(!gameover)
+      setTimeout(EventLoop, 20);
 }
 
 setTimeout(EventLoop, 20);
@@ -40,10 +43,6 @@ cubes.forEach(function(cube) {
 });
 
 bulletTime = false;
-
-function gameOver() {
-    console.log('Game over');
-}
 
 function RandomCube(color_index) {
   var possible_object_colors = [
@@ -254,10 +253,12 @@ Leap.loop(controllerOptions, function(frame) {
     var playerBB = new THREE.Box3().setFromObject(clicker);
     for (var i = 0; i < cubes.length; i++) {
     var cubeBB = new THREE.Box3().setFromObject(cubes[i]);
-    if (playerBB.intersectsBox(cubeBB)) {
+    if (playerBB.intersectsBox(cubeBB) || typeof abc !== "undefined") {
         // The player has hit a cube
-        console.log(" The player has hit a cube");
-        location.replace("./dodger_gameover.html");
+        console.log("The player has hit a cube");
+        console.log("GameOver");
+        gameover = true;
+        document.getElementById("gameoverMessage").style.display = "block";
     }
     }
 
