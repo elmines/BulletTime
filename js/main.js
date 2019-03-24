@@ -272,7 +272,7 @@ Leap.loop(controllerOptions, function(frame) {
     // Test for if it is collecting a coin.
     for (var i = 0; i < coins.length; i++) {
     var coinBB = new THREE.Box3().setFromObject(coins[i]);
-    if (playerBB.intersectsBox(coinBB)) {
+    if (playerBB.intersectsBox(coinBB) && started_by_user) {
         // The player has collected a coin.
         console.log(" The player has collected a coin.");
         scene.remove(coins[i]);
