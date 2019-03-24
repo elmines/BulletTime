@@ -16,7 +16,7 @@ var cam_height = camera.getFilmHeight();
 camera.position.z = 10; //moves camera back 5 units
 camera.position.y = 0; //positions camera above origin
 
-var renderer = new THREE.WebGLRenderer(); //displays scene
+var renderer = new THREE.WebGLRenderer({alpha: true}); //displays scene
 renderer.setSize(WIDTH, HEIGHT);
 document.body.appendChild(renderer.domElement);
 
