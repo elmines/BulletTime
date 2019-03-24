@@ -8,8 +8,19 @@
     </head>
     <body style="background-image: url(img/background.jpg); background-size: cover;">
         <div id="gameoverMessage">Game Over</div>
+        <div id="toolbar">
+          <button onclick="connect()">Connect Muse</button>
+          <button onclick="train(0)">Collect Relaxed Data</button>
+          <button onclick="train(1)">Collect Focused Data</button>
+          <button onclick="EventLoop(); run();">Start</button>
+        </div>
+        <div id="output">Connect your Muse to begin</div>
+        <div id="progress"></div>
         <script src="js/three.min.js"></script>
-				<script src="js/leap-0.6.4.min.js"></script>
+        <script src="js/leap-0.6.4.min.js"></script>
+        <script src="js/BCIDevice.build.js"></script>
+        <script src="js/bci.min.js"></script>
+        <script src="js/muse.js"></script>
 				<script src="js/main.js"></script>
     </body>
 </html>

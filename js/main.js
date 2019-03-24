@@ -30,8 +30,6 @@ function EventLoop() {
       setTimeout(EventLoop, 20);
 }
 
-setTimeout(EventLoop, 20);
-
 // Create the cube
 var cubes = [];
 for (var i = 0; i < NUM_CUBES; ++i){

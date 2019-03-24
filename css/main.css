@@ -3,6 +3,26 @@ html, body {
     margin: 0;
     overflow: hidden;
     font-family: 'Roboto', sans-serif;
+    color: white;
+}
+
+#toolbar {
+    text-align: center;
+    padding-top: 1em;
+}
+
+#toolbar button {
+    background-color: black;
+    border: 1px solid white;
+    color: white;
+    font-size: 1.5em;
+    margin-right: 1em;
+}
+
+#output, #progress{
+    padding-top: 1em;
+    text-align: center;
+    font-size: 1.75em;
 }
 
 #gameoverMessage {
