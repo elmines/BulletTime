@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>Getting Started With Three.js</title>
+        <style>
+            body { margin: 0; }
+        </style>
+    </head>
+    <body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/86/three.min.js"></script>
+        <script>
+
+            //boolean pinching
+            //boolean grabbing
+            //double leftPositonX leftPositionY leftPositionZ rightPositionX rightPositionY rightPositionZ
+            //double leftRotationX leftRotationY leftRotationZ rightRotationX rightRotationY rightRotationZ
+
+            var WIDTH = 640,
+                HEIGHT = 360;
+                
+            var FOV = 75, //field of view is angle of observable world (45-75 standard)
+                ASPECT = WIDTH / HEIGHT, //difference between horizontal FOV and vertical FOV
+                NEAR = 0.1, //distance from camera (usually small)
+                FAR = 2000; //distance camera (usually larger)
+
+            var scene = new THREE.Scene(); //container for everything, all obects added here to be displayed in browser
+            var camera = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR); //camera is how we see everything
+
+            camera.position.z = 5; //moves camera back 5 units
+            camera.position.y = 7; //positions camera above origin
+
+            var renderer = new THREE.WebGLRenderer(); //displays scene
+            renderer.setSize(WIDTH, HEIGHT);
+            document.body.appendChild(renderer.domElement);
+
+            /* var backgroundMesh, backgroundScene, backgroundCamera;
+            renderer.autoClear = false;
+
+            var loader = new THREE.OBJLoader();
+            loader.load('/examples/background-image/assets/space-background.jpg', function(texture) {
+                backgroundMesh = new THREE.Mesh(
+                    new THREE.PlaneGeometry(2,2,0),
+                    new THREE.MeshBasicMaterial({
+                        map: texture
+                    })
+                );
+                backgroundMesh.material.depthTest = false;
+                backgroundMesh.material.depthWrite = false;
+
+                backgroundScene = new THREE.Scene();
+                backgroundCamera = new THREE.Camera();
+                backgroundScene.add(backgroundCamera);
+                backgroundScene.add(backgroundMesh);
+            });           */
+
+            NUM_CUBES = 10
+            var cubes = [];
+            for (var i = 0; i < NUM_CUBES; ++i) cubes.push(RandomCube());
+
+            cubes.forEach( function(cube) {scene.add(cube); } );
+
+            bulletTime = false;
+
+            Animate();
+
+            //change bulletTime bool based on Pierce's concentration algorithm
+
+            var intervalId = setInterval(function() {MoveCubesForward(cubes, bulletTime);}, 20)
+
+            //clearInterval(intervalId);
+
+            //RemoveObsolete(cubes);
+
+            //filter
+
+            //var remaining = cubes.filter( function(cube) { return cube.position.z <= zThreshold; } )
+            
+
+            function RandomCube() {
+
+                var geometry = new THREE.BoxBufferGeometry(1, 1, 1);;
+                var material = new THREE.MeshBasicMaterial({color: RandomColor()});
+                MAX_DISPLACEMENT = 12;
+
+                var cube = new THREE.Mesh(geometry, material);
+                cube.translateZ(-15);
+
+                cube.translateX((Math.random() - 0.5) * MAX_DISPLACEMENT * 2);
+                cube.translateY((Math.random() - 0.5) * MAX_DISPLACEMENT * 2);
+                cube.translateZ((Math.random() - 0.5) * MAX_DISPLACEMENT * 2);
+
+                return cube;
+            }
+
+            function RandomColor() {
+                num = Math.random();
+                if (num < 0.1) {
+                    color = 0xf69243
+                } else if (num < 0.2) {
+                    color = 0xf6f043
+                } else if (num < 0.3) {
+                    color = 0xaff25e
+                } else if (num < 0.4) {
+                    color = 0x5ef2a4
+                } else if (num < 0.5) {
+                    color = 0x5c5cff
+                } else if (num < 0.6) {
+                    color = 0x5ef2d1
+                } else if (num < 0.7) {
+                    color = 0x5ec4f2
+                } else if (num < 0.8) {
+                    color = 0x8684f6
+                } else if (num < 0.9) {
+                    color = 0xd184f6
+                } else if (num < 1.0) {
+                    color = 0xe84f63
+                }
+                return color;
+            }
+
+            function MoveCubesForward(cubes, bulletTime)
+            {
+                cubes.forEach( function(cube) {
+                    MoveForward(cube)
+                })
+            }
+
+            function RemoveObsoleteCubes(cubes) {
+                cubes.ForEach(function(cube) {
+                    RemoveIfObsolete(cube)
+                    })
+            }
+
+            function RemoveIfObsolete(cube) {
+                if (cube.position.z > camera.position.z) {
+                    DeleteAtIndex
+                }
+            }
+
+            function DeleteAtIndex(cubes, index) {
+                scene.remove(cube[index]);
+                cubes.splice(index,1);
+            }
+
+            function ShrinkAll(cubes) {
+                cubes.forEach(function(cube) {
+                    ShrinkThis(cube)
+                })
+            }
+
+            function ShrinkThis(cube) {
+                cube.scale(3/4)
+            }
+
+            function EnlargeAll(cubes) {
+                cubes.forEach(function(cube) {
+                    EnlargeThis(cube)
+                })
+            }
+
+            function EnlargeThis(cube) {
+                cube.scale(4/3)
+            }
+
+            function Animate() {
+                requestAnimationFrame(Animate); //notifies browser we want to perform an animation
+
+                renderer.render(scene, camera); //continues to display scene on each animation call
+            };
+
+            function MoveForward(cube, bulletTime) {
+                var dist;
+                if (bulletTime) {
+                    dist = 0.02
+                } else {
+                    dist = 0.06
+                }
+                cube.position.z += dist
+            }
+
+        </script>
+    </body>
+</html>
