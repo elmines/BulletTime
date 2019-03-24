@@ -233,7 +233,7 @@ var controllerOptions = { enableGestures: true };
 // controllerOptions.optimizeHMD = true;
 
 Leap.loop(controllerOptions, function(frame) {
-    if (paused) {
+    if (paused || hands.length == 0) {
         return; // Skip this update
     }
 
